@@ -1,9 +1,10 @@
 FROM python:3
 ENV PYTHONUNBUFFERED 1
 EXPOSE 8000
+RUN mkdir /backend
+WORKDIR /backend
 
-ENV YOUR_ENV=${YOUR_ENV} \
-  PYTHONFAULTHANDLER=1 \
+ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
   PIP_NO_CACHE_DIR=off \
@@ -16,8 +17,9 @@ RUN pip install --upgrade pip
 RUN pip install poetry
 COPY pyproject.toml .
 COPY poetry.lock .
+COPY . .
 
 RUN poetry config virtualenvs.create false \
   && poetry install $(test "$YOUR_ENV" == production && echo "--no-dev") --no-interaction --no-ansi
 
-CMD /entrypoint.sh
+CMD /backend/entrypoint.sh
