@@ -1,6 +1,6 @@
+import os
+import dj_database_url
 from pathlib import Path
-
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
@@ -10,15 +10,17 @@ BASE_DIR = Path(__file__).resolve().parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%@yiam=u7t9e6%$f&524a=#hj3k^xxb1re-jgn3l7z4lpljwm_"
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ["DEBUG"] == "TRUE"
 
 ALLOWED_HOSTS = ["*"]
 AUTH_USER_MODEL = "accounts.User"
 CORS_ALLOWED_ORIGINS = [
     "https://hoarfamilychristmas.com",
+    "https://www.hoarfamilychristmas.com",
+    "https://api.hoarfamilychristmas.com",
 ]
 if DEBUG:
     CORS_ALLOWED_ORIGINS += [
@@ -78,12 +80,15 @@ WSGI_APPLICATION = "wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {"default": dj_database_url.config(conn_max_age=600, ssl_require=True)}
 
 
 # Password validation
