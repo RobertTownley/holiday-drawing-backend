@@ -4,6 +4,8 @@ EXPOSE 8000
 
 RUN pip install --upgrade pip
 RUN pip install poetry
+RUN rm ~/.cache/poetry
+RUN poetry cache clear --all
 RUN poetry config virtualenvs.create false
 
 COPY pyproject.toml .
