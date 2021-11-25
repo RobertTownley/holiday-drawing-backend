@@ -8,10 +8,4 @@ touch /backend/logs/gunicorn.log
 touch /backend/logs/access.log
 
 echo Starting Gunicorn
-exec gunicorn wsgi:application \
-    --name backend \
-    --bind unix:/backend/app.sock \
-    --workers 3 \
-    --log-level=info \
-    --log-file=/backend/logs/gunicorn.log \
-    --access-logfile=/backend/logs/access.log
+python manage.py runserver 0.0.0.0:8000
